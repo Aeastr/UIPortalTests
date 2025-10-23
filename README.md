@@ -2,6 +2,8 @@
 
 A simple demo/test app exploring `_UIPortalView`, a private iOS API that allows displaying the same view instance in multiple locations simultaneously.
 
+<img width="2844" height="1950" alt="Example" src="https://github.com/user-attachments/assets/aa2b5506-a435-4238-a364-b448f31fd391" />
+
 ## What This Is
 
 This is a **test project** demonstrating how to wrap `_UIPortalView` for use in SwiftUI using runtime APIs to avoid static symbol references.
