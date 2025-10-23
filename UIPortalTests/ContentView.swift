@@ -17,6 +17,7 @@ struct ContentView: View {
             List {
                 Section {
                     animatedContent
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 } header: {
                     Text("Standalone SwiftUI View")
                 } footer: {

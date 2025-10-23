@@ -125,6 +125,7 @@ class SourceViewContainer<Content: View> {
     init(content: Content) {
         self.hostingController = UIHostingController(rootView: content)
         self.hostingController.view.backgroundColor = .clear
+        self.hostingController.sizingOptions = .intrinsicContentSize
     }
 
     func update(content: Content) {
@@ -138,11 +139,15 @@ struct SourceViewRepresentable<Content: View>: UIViewControllerRepresentable {
     let content: Content
 
     func makeUIViewController(context: Context) -> UIHostingController<Content> {
-        container.hostingController
+        let controller = container.hostingController
+        controller.view.setContentHuggingPriority(.required, for: .horizontal)
+        controller.view.setContentHuggingPriority(.required, for: .vertical)
+        return controller
     }
 
     func updateUIViewController(_ uiViewController: UIHostingController<Content>, context: Context) {
         container.update(content: content)
+        uiViewController.view.invalidateIntrinsicContentSize()
     }
 }
 
