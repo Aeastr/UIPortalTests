@@ -126,28 +126,42 @@ class SourceViewContainer<Content: View> {
         self.hostingController = UIHostingController(rootView: content)
         self.hostingController.view.backgroundColor = .clear
         self.hostingController.sizingOptions = .intrinsicContentSize
+
+        // Force layout to get proper size
+        let targetSize = hostingController.view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+        hostingController.view.frame.size = targetSize
     }
 
     func update(content: Content) {
         hostingController.rootView = content
+
+        // Update size after content changes
+        let targetSize = hostingController.view.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+        hostingController.view.frame.size = targetSize
     }
 }
 
-/// UIViewControllerRepresentable that displays the source view
-struct SourceViewRepresentable<Content: View>: UIViewControllerRepresentable {
+/// UIViewRepresentable that displays the source view
+struct SourceViewRepresentable<Content: View>: UIViewRepresentable {
     let container: SourceViewContainer<Content>
     let content: Content
 
-    func makeUIViewController(context: Context) -> UIHostingController<Content> {
-        let controller = container.hostingController
-        controller.view.setContentHuggingPriority(.required, for: .horizontal)
-        controller.view.setContentHuggingPriority(.required, for: .vertical)
-        return controller
+    func makeUIView(context: Context) -> UIView {
+        let wrapper = UIView()
+        let sourceView = container.view
+        sourceView.translatesAutoresizingMaskIntoConstraints = false
+        wrapper.addSubview(sourceView)
+        NSLayoutConstraint.activate([
+            sourceView.topAnchor.constraint(equalTo: wrapper.topAnchor),
+            sourceView.bottomAnchor.constraint(equalTo: wrapper.bottomAnchor),
+            sourceView.leadingAnchor.constraint(equalTo: wrapper.leadingAnchor),
+            sourceView.trailingAnchor.constraint(equalTo: wrapper.trailingAnchor)
+        ])
+        return wrapper
     }
 
-    func updateUIViewController(_ uiViewController: UIHostingController<Content>, context: Context) {
+    func updateUIView(_ uiView: UIView, context: Context) {
         container.update(content: content)
-        uiViewController.view.invalidateIntrinsicContentSize()
     }
 }
 
