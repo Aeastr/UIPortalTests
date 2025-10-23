@@ -16,12 +16,7 @@ struct ContentView: View {
         NavigationStack {
             List {
                 Section {
-                    HStack {
-                        Spacer()
-                        animatedContent
-                            .fixedSize()
-                        Spacer()
-                    }
+                    animatedContent
                 } header: {
                     Text("Standalone SwiftUI View")
                 } footer: {
@@ -29,16 +24,12 @@ struct ContentView: View {
                 }
 
                 Section {
-                    HStack {
-                        Spacer()
-                        if let container = sourceContainer {
-                            SourceViewRepresentable(
-                                container: container,
-                                content: AnyView(animatedContent)
-                            )
-                            .fixedSize()
-                        }
-                        Spacer()
+                    
+                    if let container = sourceContainer {
+                        SourceViewRepresentable(
+                            container: container,
+                            content: AnyView(animatedContent)
+                        )
                     }
                 } header: {
                     Text("Source View")
@@ -47,17 +38,13 @@ struct ContentView: View {
                 }
 
                 Section {
-                    HStack {
-                        Spacer()
-                        if let container = sourceContainer {
-                            PortalView(
-                                source: container,
-                                hidesSource: false,
-                                matchesPosition: false
-                            )
-                            .fixedSize()
-                        }
-                        Spacer()
+                    
+                    if let container = sourceContainer {
+                        PortalView(
+                            source: container,
+                            hidesSource: false,
+                            matchesPosition: false
+                        )
                     }
                 } header: {
                     Text("Portal View")
