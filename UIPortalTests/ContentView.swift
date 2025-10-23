@@ -16,6 +16,11 @@ struct ContentView: View {
         NavigationStack {
             List {
                 Section {
+                    Text("This demo shows _UIPortalView, a private API that displays the same view instance in multiple locations. The Source and Portal views share identical UUIDs and animations because they're literally the same UIView - the portal is just a window into the source.")
+                        .font(.body)
+                }
+
+                Section {
                     animatedContent
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 } header: {
@@ -53,6 +58,9 @@ struct ContentView: View {
                     Text("_UIPortalView showing the same instance")
                 }
             }
+            .listStyle(.insetGrouped)
+            .contentMargins(.top, 0, for: .scrollContent)
+            .safeAreaPadding(.bottom, 40)
             .navigationTitle("UIPortalView Demo")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -85,19 +93,38 @@ struct ContentView: View {
     }
 
     var animatedContent: some View {
+        AnimatedContentView(rotation: rotation, scale: scale)
+    }
+}
+
+struct AnimatedContentView: View {
+    let rotation: Double
+    let scale: CGFloat
+    private let id = UUID()
+    private let symbolColor = Color(
+        red: .random(in: 0...1),
+        green: .random(in: 0...1),
+        blue: .random(in: 0...1)
+    )
+    private let symbolName = [
+        "globe", "star.fill", "heart.fill", "flame.fill",
+        "bolt.fill", "leaf.fill", "cloud.fill", "moon.fill",
+        "sun.max.fill", "sparkles"
+    ].randomElement()!
+
+    var body: some View {
         VStack {
-            Image(systemName: "globe")
+            Image(systemName: symbolName)
                 .imageScale(.large)
                 .font(.system(size: 50))
-                .foregroundStyle(.tint)
-            Text("\(UUID())")
+                .foregroundStyle(symbolColor)
+            Text("\(id)")
                 .font(.caption)
                 .monospaced()
                 .fontWeight(.semibold)
         }
         .rotationEffect(.degrees(rotation))
         .scaleEffect(scale)
-        
     }
 }
 
