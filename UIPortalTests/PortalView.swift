@@ -141,27 +141,45 @@ class SourceViewContainer<Content: View> {
     }
 }
 
+/// Wrapper for source view with proper intrinsic sizing
+class SourceViewWrapper: UIView {
+    let sourceView: UIView
+
+    init(sourceView: UIView) {
+        self.sourceView = sourceView
+        super.init(frame: .zero)
+
+        sourceView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(sourceView)
+        NSLayoutConstraint.activate([
+            sourceView.topAnchor.constraint(equalTo: topAnchor),
+            sourceView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            sourceView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            sourceView.trailingAnchor.constraint(equalTo: trailingAnchor)
+        ])
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override var intrinsicContentSize: CGSize {
+        sourceView.intrinsicContentSize
+    }
+}
+
 /// UIViewRepresentable that displays the source view
 struct SourceViewRepresentable<Content: View>: UIViewRepresentable {
     let container: SourceViewContainer<Content>
     let content: Content
 
-    func makeUIView(context: Context) -> UIView {
-        let wrapper = UIView()
-        let sourceView = container.view
-        sourceView.translatesAutoresizingMaskIntoConstraints = false
-        wrapper.addSubview(sourceView)
-        NSLayoutConstraint.activate([
-            sourceView.topAnchor.constraint(equalTo: wrapper.topAnchor),
-            sourceView.bottomAnchor.constraint(equalTo: wrapper.bottomAnchor),
-            sourceView.leadingAnchor.constraint(equalTo: wrapper.leadingAnchor),
-            sourceView.trailingAnchor.constraint(equalTo: wrapper.trailingAnchor)
-        ])
-        return wrapper
+    func makeUIView(context: Context) -> SourceViewWrapper {
+        SourceViewWrapper(sourceView: container.view)
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {
+    func updateUIView(_ uiView: SourceViewWrapper, context: Context) {
         container.update(content: content)
+        uiView.invalidateIntrinsicContentSize()
     }
 }
 
